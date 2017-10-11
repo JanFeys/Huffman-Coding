@@ -22,7 +22,7 @@ def load_data(file_name):
         sym_id += 1
     fn.close()
     
-    assert len(f_heap) == len(set(f_heap)) #we will assume weights are distinct
+    assert len(f_heap) == len(set(f_heap)) #we will assume all weights are distinct
     return f_heap, f_dict
 
 def generate_coding(f_heap,f_dict):
@@ -38,9 +38,8 @@ def generate_coding(f_heap,f_dict):
     else:
         fn = f1 + f2
         if fn in f_dict:
-            raise ValueError('fatal error: frequency collision in coding')
-        f_dict[fn].add(f_dict[f1].pop())
-        f_dict[fn].add(f_dict[f2].pop())
+            raise FatalError('frequency collision during Huffman coding')
+        f_dict[fn] = f_dict[fn] | f_dict.pop(f1) | f_dict.pop(f2)
         heappush(f_heap,fn)
         Huffman_coding = generate_coding(f_heap,f_dict)
         bifur_code = Huffman_coding[fn]
